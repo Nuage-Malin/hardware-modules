@@ -1,4 +1,4 @@
-module github.com/huin/goserial
+module github.com/Nuage-Malin/hardware-modules
 
 go 1.19
 
