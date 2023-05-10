@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -57,7 +58,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			} else {
-				DiskConsoList[0][0] += value
+				DiskConsoList[0][0] += math.Floor(value*100) / 100
 				DiskConsoList[0][1]++
 			}
 		} else if DiskConsoList[0][1] >= 3600 {
