@@ -81,13 +81,15 @@ func main() {
 		log.Fatal(err)
 	}
 	scanner := bufio.NewScanner(s)
-	//scanner.Split(bufio.ScanWords)
+	// scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		fmt.Print("Energy consumntion: ")
 		time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(scanner.Text())
+		str := scanner.Text()
+		split_str := strings.Split(str, " ")
+		fmt.Print(split_str)
 	}
 }
