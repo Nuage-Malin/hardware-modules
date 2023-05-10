@@ -90,6 +90,6 @@ func main() {
 		}
 		str := scanner.Text()
 		split_str := strings.Split(str, " ")
-		fmt.Print(split_str)
+		fmt.Print(split_str[0])
 	}
 }
