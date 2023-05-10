@@ -50,6 +50,8 @@ func main() {
 			log.Fatal(err)
 		}
 		if DiskConsoList[0][1] < 3600 {
+			fmt.Print(scanner.Text())
+			fmt.Print("\n")
 			value, err := strconv.ParseFloat(scanner.Text(), 32)
 			if err != nil {
 				log.Fatal(err)
@@ -63,8 +65,8 @@ func main() {
 			DiskConsoList[0][0] = 0
 			DiskConsoList[0][3]++
 		}
-		fmt.Print(DiskConsoList[0][0])
-		fmt.Print("\n")
+		// fmt.Print(DiskConsoList[0][0])
+		// fmt.Print("\n")
 	}
 }
 
