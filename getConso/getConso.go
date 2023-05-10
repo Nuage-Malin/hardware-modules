@@ -63,7 +63,7 @@ func main() {
 			DiskConsoList[0][0] = 0
 			DiskConsoList[0][3]++
 		}
-		fmt.Print(DiskConsoList[0][0])
+		fmt.Print(DiskConsoList[0][0] + '\n')
 	}
 }
 
