@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/tarm/serial"
 )
@@ -84,7 +83,7 @@ func main() {
 	// scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		fmt.Print("Energy consumntion: ")
-		time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+		// time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
