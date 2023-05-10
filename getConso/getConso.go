@@ -43,7 +43,7 @@ func main() {
 	}
 	fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
-	scanner.Split(bufio.ScanWords)
+	//scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		time.Sleep(1000 * time.Millisecond) //par seconde
 		if scanner.Err() != nil {
