@@ -41,6 +41,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print("connexion arduino")
 	scanner := bufio.NewScanner(s)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
