@@ -89,8 +89,9 @@ func main() {
 			log.Fatal(err)
 		}
 		str := scanner.Text()
-		split_str := strings.Split(str, " ")
-		fmt.Print(split_str[0])
+		fmt.Print(str)
+		// split_str := strings.Split(str, " ")
+		// fmt.Print(split_str[0])
 		fmt.Print("\n")
 	}
 }
