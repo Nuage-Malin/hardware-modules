@@ -13,7 +13,7 @@ import (
 )
 
 // var hddId = 0
-var DiskConsoList [1][4]int = [1][4]int{}
+var DiskConsoList [1][4]float64 = [1][4]float64{}
 
 // [0] : conso par seconde incr par seconde
 // [1] : nbr de seconde incr par seconde (if statement si 3600 sec)
@@ -50,7 +50,7 @@ func main() {
 			log.Fatal(err)
 		}
 		if DiskConsoList[0][1] < 3600 {
-			value, err := strconv.Atoi(scanner.Text())
+			value, err := strconv.ParseFloat(scanner.Text(), 32)
 			if err != nil {
 				log.Fatal(err)
 			} else {
@@ -68,7 +68,7 @@ func main() {
 }
 
 // arg int -> id hdd
-func SendConso(hdd int) int {
+func SendConso(hdd int) float64 {
 	return DiskConsoList[hdd][2] / DiskConsoList[hdd][3]
 }
 
