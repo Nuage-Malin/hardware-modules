@@ -13,7 +13,7 @@ import (
 )
 
 // var hddId = 0
-var DiskConsoList [][]int = [][]int{}
+var DiskConsoList [1][4]int = [1][4]int{}
 
 // [0] : conso par seconde incr par seconde
 // [1] : nbr de seconde incr par seconde (if statement si 3600 sec)
@@ -41,7 +41,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print("connexion arduino")
+	fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
