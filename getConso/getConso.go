@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/tarm/serial"
 )
@@ -33,64 +35,66 @@ func findArduino() string {
 	return ""
 }
 
-// func main() {
-// 	c := &serial.Config{Name: findArduino(), Baud: 9600}
-// 	s, err := serial.OpenPort(c)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	fmt.Print("connexion arduino\n")
-// 	scanner := bufio.NewScanner(s)
-// 	scanner.Split(bufio.ScanWords)
-// 	for scanner.Scan() {
-// 		time.Sleep(1000 * time.Millisecond) //par seconde
-// 		if scanner.Err() != nil {
-// 			log.Fatal(err)
-// 		}
-// 		if DiskConsoList[0][1] < 3600 {
-// 			// fmt.Print(scanner.Text())
-// 			// fmt.Print("\n")
-// 			value, err := strconv.ParseFloat(scanner.Text(), 32)
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			} else {
-// 				DiskConsoList[0][0] += value
-// 				DiskConsoList[0][1]++
-// 			}
-// 		} else if DiskConsoList[0][1] >= 3600 {
-// 			DiskConsoList[0][2] += (DiskConsoList[0][0] / DiskConsoList[0][1])
-// 			DiskConsoList[0][1] = 0
-// 			DiskConsoList[0][0] = 0
-// 			DiskConsoList[0][3]++
-// 		}
-// 		// fmt.Print(DiskConsoList[0][0])
-// 		// fmt.Print("\n")
-// 	}
-// }
-
-// arg int -> id hdd
-func SendConso(hdd int) float64 {
-	return DiskConsoList[hdd][2] / DiskConsoList[hdd][3]
-}
-
 func main() {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
-	// scanner.Split(bufio.ScanWords)
+	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		fmt.Print("Energy consumntion: ")
-		// time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+		time.Sleep(1000 * time.Millisecond) //par seconde
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		str := scanner.Text()
-		// fmt.Print(str)
-		split_str := strings.Split(str, " ")
-		fmt.Print(split_str[0])
+		if DiskConsoList[0][1] < 3600 {
+			str := scanner.Text()
+			split_str := strings.Split(str, " ")
+			// fmt.Print(split_str[0])
+			// fmt.Print("\n")
+			value, err := strconv.ParseFloat(split_str[0], 32)
+			if err != nil {
+				log.Fatal(err)
+			} else {
+				DiskConsoList[0][0] += value
+				DiskConsoList[0][1]++
+			}
+		} else if DiskConsoList[0][1] >= 3600 {
+			DiskConsoList[0][2] += (DiskConsoList[0][0] / DiskConsoList[0][1])
+			DiskConsoList[0][1] = 0
+			DiskConsoList[0][0] = 0
+			DiskConsoList[0][3]++
+		}
+		fmt.Print(DiskConsoList[0][0])
 		fmt.Print("\n")
 	}
 }
+
+// arg int -> id hdd
+func SendConso(hdd int) float64 {
+	return DiskConsoList[hdd][2] / DiskConsoList[hdd][3]
+}
+
+// func main() {
+// 	c := &serial.Config{Name: findArduino(), Baud: 9600}
+// 	s, err := serial.OpenPort(c)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	scanner := bufio.NewScanner(s)
+// 	// scanner.Split(bufio.ScanWords)
+// 	for scanner.Scan() {
+// 		fmt.Print("Energy consumntion: ")
+// 		// time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+// 		if scanner.Err() != nil {
+// 			log.Fatal(err)
+// 		}
+// 		str := scanner.Text()
+// 		// fmt.Print(str)
+// 		split_str := strings.Split(str, " ")
+// 		fmt.Print(split_str[0])
+// 		fmt.Print("\n")
+// 	}
+// }
