@@ -58,7 +58,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			} else {
-				DiskConsoList[0][0] += math.Floor(value*100) / 100
+				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+				DiskConsoList[0][0] += math.Round(value*100) / 100
 				DiskConsoList[0][1]++
 			}
 		} else if DiskConsoList[0][1] >= 3600 {
