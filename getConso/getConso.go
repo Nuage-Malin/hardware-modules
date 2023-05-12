@@ -36,7 +36,7 @@ func findArduino() string {
 	return ""
 }
 
-func GetConso() {
+func main() {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 	if err != nil {
