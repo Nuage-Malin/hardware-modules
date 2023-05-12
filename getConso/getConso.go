@@ -36,7 +36,7 @@ func findArduino() string {
 	return ""
 }
 
-func GetConso() {
+func GetConso(hddId int) {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 	if err != nil {
@@ -49,7 +49,7 @@ func GetConso() {
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		if DiskConsoList[0][1] < 3600 {
+		if DiskConsoList[hddId][1] < 3600 {
 			str := scanner.Text()
 			split_str := strings.Split(str, " ")
 			// fmt.Print(split_str[0])
@@ -59,23 +59,23 @@ func GetConso() {
 				log.Fatal(err)
 			} else {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
-				DiskConsoList[0][0] += math.Round(value*100) / 100
-				DiskConsoList[0][1]++
+				DiskConsoList[hddId][0] += math.Round(value*100) / 100
+				DiskConsoList[hddId][1]++
 			}
 		} else if DiskConsoList[0][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
-			DiskConsoList[0][2] += (DiskConsoList[0][0] / DiskConsoList[0][1])
-			DiskConsoList[0][1] = 0
-			DiskConsoList[0][0] = 0
-			DiskConsoList[0][3]++
+			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
+			DiskConsoList[hddId][1] = 0
+			DiskConsoList[hddId][0] = 0
+			DiskConsoList[hddId][3]++
 		}
-		fmt.Print(DiskConsoList[0][0])
+		fmt.Print(DiskConsoList[hddId][0])
 		fmt.Print("\n")
 	}
 }
 
 // arg int -> id hdd
-func SendConso(hdd int) float64 {
-	return DiskConsoList[hdd][2] / DiskConsoList[hdd][3]
+func SendConso(hddId int) float64 {
+	return DiskConsoList[hddId][2] / DiskConsoList[hddId][3]
 }
 
 // func main() {
