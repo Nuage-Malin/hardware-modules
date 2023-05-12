@@ -36,7 +36,7 @@ func findArduino() string {
 	return ""
 }
 
-func main() {
+func GetConso() {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 	if err != nil {
@@ -62,7 +62,7 @@ func main() {
 				DiskConsoList[0][0] += math.Round(value*100) / 100
 				DiskConsoList[0][1]++
 			}
-		} else if DiskConsoList[0][1] >= 3600 {
+		} else if DiskConsoList[0][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
 			DiskConsoList[0][2] += (DiskConsoList[0][0] / DiskConsoList[0][1])
 			DiskConsoList[0][1] = 0
 			DiskConsoList[0][0] = 0
