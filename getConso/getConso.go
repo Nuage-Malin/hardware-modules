@@ -14,7 +14,7 @@ import (
 )
 
 // var hddId = 0
-var DiskConsoList [1][4]float64 = [1][4]float64{}
+var DiskConsoList [1][4]float64 = [1][4]float64{} //voir pour moduler taille list
 
 // [0] : conso par seconde incr par seconde
 // [1] : nbr de seconde incr par seconde (if statement si 3600 sec)
@@ -45,7 +45,6 @@ func GetConso(hddId int) {
 	fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
 	for scanner.Scan() {
-		time.Sleep(1000 * time.Millisecond) //par seconde
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
@@ -57,12 +56,17 @@ func GetConso(hddId int) {
 			value, err := strconv.ParseFloat(split_str[0], 32)
 			if err != nil {
 				log.Fatal(err)
+			} else if DiskConsoList[hddId][3] == 0 {
+				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+				DiskConsoList[hddId][0] += math.Round(value*100) / 100
+				DiskConsoList[hddId][1]++
+				DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
 			} else {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 				DiskConsoList[hddId][0] += math.Round(value*100) / 100
 				DiskConsoList[hddId][1]++
 			}
-		} else if DiskConsoList[0][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
+		} else if DiskConsoList[hddId][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
 			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
 			DiskConsoList[hddId][1] = 0
 			DiskConsoList[hddId][0] = 0
@@ -75,7 +79,11 @@ func GetConso(hddId int) {
 
 // arg int -> id hdd
 func SendConso(hddId int) float64 {
-	return DiskConsoList[hddId][2] / DiskConsoList[hddId][3]
+	if DiskConsoList[hddId][3] < 2 {
+		return DiskConsoList[hddId][2]
+	} else {
+		return DiskConsoList[hddId][2] / DiskConsoList[hddId][3]
+	}
 }
 
 // func main() {
