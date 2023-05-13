@@ -59,6 +59,7 @@ func main() {
 				log.Fatal(err)
 			} else if DiskConsoList[hddId][3] == 0 {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+				fmt.Print(value)
 				DiskConsoList[hddId][0] += math.Round(value*100) / 100
 				DiskConsoList[hddId][1]++
 				if DiskConsoList[hddId][1] != 0 {
