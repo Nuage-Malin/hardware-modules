@@ -64,9 +64,17 @@ func main() {
 				if DiskConsoList[hddId][1] != 0 {
 					DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
 				}
+				fmt.Print("=====================================\n")
+				fmt.Print("Total conso sec : ")
+				fmt.Print(DiskConsoList[hddId][0])
+				fmt.Print("\nNbr secondes (égal à 60 normalement) : ")
+				fmt.Print(DiskConsoList[hddId][1])
 				fmt.Print("\nTotal conso heure : ")
 				fmt.Print(DiskConsoList[hddId][2])
+				fmt.Print("\nNbr heures (égal à 0 normalement) : ")
+				fmt.Print(DiskConsoList[hddId][3])
 				fmt.Print("\n")
+				fmt.Print("=====================================\n")
 			} else {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 				DiskConsoList[hddId][0] += math.Round(value*100) / 100
@@ -78,21 +86,11 @@ func main() {
 			DiskConsoList[hddId][0] = 0
 			DiskConsoList[hddId][3]++
 		}
-		fmt.Print(DiskConsoList[hddId][1])
-		fmt.Print("\n")
-		if DiskConsoList[hddId][1] == 60 {
-			fmt.Print("===================60 sec==================\n")
-			fmt.Print("Total conso sec : ")
-			fmt.Print(DiskConsoList[hddId][0])
-			fmt.Print("\nNbr secondes (égal à 60 normalement) : ")
-			fmt.Print(DiskConsoList[hddId][1])
-			fmt.Print("\nTotal conso heure : ")
-			fmt.Print(DiskConsoList[hddId][2])
-			fmt.Print("\nNbr heures (égal à 0 normalement) : ")
-			fmt.Print(DiskConsoList[hddId][3])
-			fmt.Print("\n")
-			fmt.Print("===========================================\n")
-		}
+		// fmt.Print(DiskConsoList[hddId][1])
+		// fmt.Print("\n")
+		// if DiskConsoList[hddId][1] == 60 {
+
+		// }
 	}
 }
 
