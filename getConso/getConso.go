@@ -61,13 +61,14 @@ func main() {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 				DiskConsoList[hddId][0] += math.Round(value*100) / 100
 				DiskConsoList[hddId][1]++
-				// DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
+				DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
+				fmt.Print("passe ici ?")
 			} else {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 				DiskConsoList[hddId][0] += math.Round(value*100) / 100
 				DiskConsoList[hddId][1]++
 			}
-		} else if DiskConsoList[hddId][1] == 60 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
+		} else if DiskConsoList[hddId][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
 			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
 			fmt.Print("\nTotal conso heure : ")
 			fmt.Print(DiskConsoList[hddId][2])
