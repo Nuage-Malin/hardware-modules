@@ -42,7 +42,7 @@ func GetConso(hddId int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print("connexion arduino\n")
+	// fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
 	for scanner.Scan() {
 		if scanner.Err() != nil {
@@ -72,8 +72,8 @@ func GetConso(hddId int) {
 			DiskConsoList[hddId][0] = 0
 			DiskConsoList[hddId][3]++
 		}
-		fmt.Print(DiskConsoList[hddId][0])
-		fmt.Print("\n")
+		// fmt.Print(DiskConsoList[hddId][0])
+		// fmt.Print("\n")
 	}
 }
 
