@@ -13,7 +13,7 @@ import (
 	"github.com/tarm/serial"
 )
 
-// var hddId = 0
+var hddId = 0
 var DiskConsoList [1][4]float64 = [1][4]float64{}
 
 // [0] : conso par seconde incr par seconde
@@ -49,7 +49,7 @@ func main() {
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		if DiskConsoList[0][1] < 3600 {
+		if DiskConsoList[hddId][1] < 3600 {
 			str := scanner.Text()
 			split_str := strings.Split(str, " ")
 			// fmt.Print(split_str[0])
@@ -57,19 +57,35 @@ func main() {
 			value, err := strconv.ParseFloat(split_str[0], 32)
 			if err != nil {
 				log.Fatal(err)
+			} else if DiskConsoList[hddId][3] == 0 {
+				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
+				DiskConsoList[hddId][0] += math.Round(value*100) / 100
+				DiskConsoList[hddId][1]++
+				DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
 			} else {
 				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
-				DiskConsoList[0][0] += math.Round(value*100) / 100
-				DiskConsoList[0][1]++
+				DiskConsoList[hddId][0] += math.Round(value*100) / 100
+				DiskConsoList[hddId][1]++
 			}
-		} else if DiskConsoList[0][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
-			DiskConsoList[0][2] += (DiskConsoList[0][0] / DiskConsoList[0][1])
-			DiskConsoList[0][1] = 0
-			DiskConsoList[0][0] = 0
-			DiskConsoList[0][3]++
+		} else if DiskConsoList[hddId][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
+			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
+			DiskConsoList[hddId][1] = 0
+			DiskConsoList[hddId][0] = 0
+			DiskConsoList[hddId][3]++
 		}
-		fmt.Print(DiskConsoList[0][0])
-		fmt.Print("\n")
+		if DiskConsoList[hddId][1] == 60 {
+			fmt.Print("===================60 sec==================\n")
+			fmt.Print("Total conso sec : ")
+			fmt.Print(DiskConsoList[hddId][0])
+			fmt.Print("\nNbr secondes (égal à 60 normalement) : ")
+			fmt.Print(DiskConsoList[hddId][1])
+			fmt.Print("\nTotal conso heure : ")
+			fmt.Print(DiskConsoList[hddId][2])
+			fmt.Print("\nNbr heures (égal à 0 normalement) : ")
+			fmt.Print(DiskConsoList[hddId][3])
+			fmt.Print("\n")
+			fmt.Print("===========================================\n")
+		}
 	}
 }
 
