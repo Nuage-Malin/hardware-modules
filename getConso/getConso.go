@@ -42,7 +42,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print("connexion arduino\n")
+	// fmt.Print("connexion arduino\n")
 	scanner := bufio.NewScanner(s)
 	for scanner.Scan() {
 		time.Sleep(1000 * time.Millisecond) //par seconde
@@ -73,6 +73,7 @@ func main() {
 			DiskConsoList[hddId][0] = 0
 			DiskConsoList[hddId][3]++
 		}
+		fmt.Print(DiskConsoList[hddId][1])
 		if DiskConsoList[hddId][1] == 60 {
 			fmt.Print("===================60 sec==================\n")
 			fmt.Print("Total conso sec : ")
