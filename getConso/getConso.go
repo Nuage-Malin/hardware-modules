@@ -69,6 +69,9 @@ func main() {
 			}
 		} else if DiskConsoList[hddId][1] == 60 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
 			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
+			fmt.Print("\nTotal conso heure : ")
+			fmt.Print(DiskConsoList[hddId][2])
+			fmt.Print("\n")
 			DiskConsoList[hddId][1] = 0
 			DiskConsoList[hddId][0] = 0
 			DiskConsoList[hddId][3]++
