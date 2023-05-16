@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -49,7 +48,7 @@ func main() {
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		if DiskConsoList[hddId][1] < 60 {
+		if DiskConsoList[hddId][1] < 3600 {
 			str := scanner.Text()
 			split_str := strings.Split(str, " ")
 			// fmt.Print(split_str[0])
@@ -58,14 +57,16 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			} else {
-				time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
-				DiskConsoList[hddId][0] += math.Round(value*100) / 100
+				time.Sleep(1000 * time.Millisecond)
 				DiskConsoList[hddId][1]++
+				DiskConsoList[hddId][2] = (DiskConsoList[hddId][1] / 3600) * value / 1000 // sans le nbr de jour car = fois 1
+				fmt.Print("\nTotal conso heure : ")
+				fmt.Print(DiskConsoList[hddId][2])
+				fmt.Print("\n")
 			}
-		} else if DiskConsoList[hddId][1] >= 60 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
-			DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
+		} else if DiskConsoList[hddId][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
+			// DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
 			DiskConsoList[hddId][1] = 0
-			DiskConsoList[hddId][0] = 0
 			DiskConsoList[hddId][3]++
 			fmt.Print("\nTotal conso heure : ")
 			fmt.Print(DiskConsoList[hddId][2])
