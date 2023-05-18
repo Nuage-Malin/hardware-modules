@@ -2,13 +2,13 @@ package getConso
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/kraken-hpc/go-fork"
 	"github.com/tarm/serial"
 )
 
@@ -26,16 +26,19 @@ func findArduino() string {
 	contents, _ := ioutil.ReadDir("/dev")
 
 	for _, f := range contents {
-		if strings.Contains(f.Name(), "ttyUSB") ||
-			strings.Contains(f.Name(), "ttyACM0") {
-			fmt.Printf("Linked to Arduino: %s\n", f.Name())
+		if strings.Contains(f.Name(), "ttyUSB") || strings.Contains(f.Name(), "ttyACM0") {
 			return "/dev/" + f.Name()
 		}
 	}
 	return ""
 }
 
-func GetConso(hddId int) {
+func GetConsoStartup() {
+	fork.RegisterFunc("child", child)
+	fork.Init()
+}
+
+func child(hddId int) {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 	if err != nil {
@@ -63,6 +66,12 @@ func GetConso(hddId int) {
 			DiskConsoList[hddId][1] = 0
 			DiskConsoList[hddId][3]++
 		}
+	}
+}
+
+func GetConso(hddId int) {
+	if err := fork.Fork("child", 1); err != nil {
+		log.Fatalf("failed to fork: %v", err)
 	}
 }
 

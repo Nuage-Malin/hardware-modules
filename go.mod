@@ -7,4 +7,7 @@ require (
 	github.com/warthog618/gpiod v0.8.1
 )
 
-require golang.org/x/sys v0.3.0 // indirect
+require (
+	github.com/kraken-hpc/go-fork v0.1.1 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+)
