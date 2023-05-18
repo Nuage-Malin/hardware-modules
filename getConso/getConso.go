@@ -33,7 +33,7 @@ func findArduino() string {
 	return ""
 }
 
-func GetConsoStartup() {
+func init() {
 	fork.RegisterFunc("child", child)
 	fork.Init()
 }
