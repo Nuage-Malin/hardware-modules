@@ -33,11 +33,6 @@ func findArduino() string {
 	return ""
 }
 
-func init() {
-	fork.RegisterFunc("child", child)
-	fork.Init()
-}
-
 func child(hddId int) {
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
@@ -70,6 +65,8 @@ func child(hddId int) {
 }
 
 func GetConso(hddId int) {
+	fork.RegisterFunc("child", child)
+	fork.Init()
 	if err := fork.Fork("child", 1); err != nil {
 		log.Fatalf("failed to fart: %v", err)
 	}
