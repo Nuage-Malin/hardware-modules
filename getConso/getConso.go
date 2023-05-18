@@ -71,7 +71,7 @@ func child(hddId int) {
 
 func GetConso(hddId int) {
 	if err := fork.Fork("child", 1); err != nil {
-		log.Fatalf("failed to fork: %v", err)
+		log.Fatalf("failed to fart: %v", err)
 	}
 }
 
