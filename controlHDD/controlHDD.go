@@ -28,7 +28,7 @@ func findPinsFromDisk(hdd string) []int {
 
 func getHardDiskRelay(hdd string) bool {
 	print(hdd)
-	firstHDD, _ := gpiod.RequestLines(hdd, findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
+	firstHDD, _ := gpiod.RequestLines("gpiochip0", findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
 
 	err, _ := firstHDD.Info()
 
@@ -54,7 +54,7 @@ func HardDiskStatusManager(hdd string) bool {
 
 func HardDiskShutDown(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	firstHDD, _ := gpiod.RequestLines(hdd, hddLines, gpiod.AsOutput(0, 1))
+	firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 1))
 	print("HDD? ", hdd, "\nHDD Lines? ", hddLines[0], hddLines[1])
 	err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
@@ -69,7 +69,7 @@ func HardDiskShutDown(hdd string) {
 }
 
 func HardDiskStartUp(hdd string) {
-	firstHDD, _ := gpiod.RequestLines(hdd, findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
+	firstHDD, _ := gpiod.RequestLines("gpiochip0", findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
 
 	hddLines := findPinsFromDisk(hdd)
 	err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
