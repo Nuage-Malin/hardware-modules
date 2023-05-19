@@ -43,7 +43,7 @@ func getHardDiskRelay(hdd string) bool {
 			DiskStatusList[i] = state
 		}
 	}
-	firstHDD.Close()
+	//firstHDD.Close()
 	return state
 }
 
@@ -67,7 +67,7 @@ func HardDiskShutDown(hdd string) {
 			DiskStatusList[i] = false
 		}
 	}
-	firstHDD.Close()
+	//firstHDD.Close()
 }
 
 func HardDiskStartUp(hdd string) {
@@ -83,5 +83,5 @@ func HardDiskStartUp(hdd string) {
 			DiskStatusList[i] = true
 		}
 	}
-	firstHDD.Close()
+	//firstHDD.Close()
 }
