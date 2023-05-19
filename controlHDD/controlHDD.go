@@ -27,12 +27,7 @@ func findPinsFromDisk(hdd string) []int {
 }
 
 func getHardDiskRelay(hdd string) bool {
-	for i, hddtmp := range DiskList {
-		print(hddtmp)
-		if hddtmp == hdd {
-			return DiskStatusList[i]
-		}
-	}
+	print(hdd)
 	firstHDD, _ := gpiod.RequestLines(hdd, findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
 
 	err, _ := firstHDD.Info()
@@ -58,12 +53,6 @@ func HardDiskStatusManager(hdd string) bool {
 }
 
 func HardDiskShutDown(hdd string) {
-	for i, hddtmp := range DiskList {
-		if hddtmp == hdd {
-			DiskStatusList[i] = false
-			return
-		}
-	}
 	firstHDD, _ := gpiod.RequestLines(hdd, findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
 
 	hddLines := findPinsFromDisk(hdd)
@@ -80,12 +69,6 @@ func HardDiskShutDown(hdd string) {
 }
 
 func HardDiskStartUp(hdd string) {
-	for i, hddtmp := range DiskList {
-		if hddtmp == hdd {
-			DiskStatusList[i] = true
-			return
-		}
-	}
 	firstHDD, _ := gpiod.RequestLines(hdd, findPinsFromDisk(hdd), gpiod.AsOutput(0, 1))
 
 	hddLines := findPinsFromDisk(hdd)
