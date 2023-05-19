@@ -55,9 +55,9 @@ func HardDiskStatusManager(hdd string) bool {
 
 func HardDiskShutDown(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
+	_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
 	print("HDD? ", hdd, "\nHDD Lines? ", hddLines[0], hddLines[1])
-	err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
+	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
 	if err != nil {
 		log.Fatal(err)
@@ -72,8 +72,8 @@ func HardDiskShutDown(hdd string) {
 
 func HardDiskStartUp(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
-	err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
+	_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
+	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
 
 	if err != nil {
 		log.Fatal(err)
