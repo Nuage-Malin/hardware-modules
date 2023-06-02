@@ -6,7 +6,7 @@ import (
 	"github.com/warthog618/gpiod"
 )
 
-var GpioSocketInstance gpiod.Lines = gpiod.Lines{}
+var GpioSocketInstance *gpiod.Lines = nil
 
 // Available RaspBerry Pi GPIO pins for HDD relays
 var AvailableDiskPins [][]int = [][]int{
@@ -83,8 +83,9 @@ func HardDiskStartUp(hdd string) {
 
 func HDDRelaySocketConstructor(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	firstHDD, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
-	if err != nil {
-		GpioSocketInstance = *firstHDD
+	var err error
+	GpioSocketInstance, err = gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
+	if err == nil {
+		GpioSocketInstance = nil
 	}
 }
