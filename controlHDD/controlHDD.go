@@ -6,6 +6,8 @@ import (
 	"github.com/warthog618/gpiod"
 )
 
+var GpioSocketInstance gpiod.Lines = gpiod.Lines{}
+
 // Available RaspBerry Pi GPIO pins for HDD relays
 var AvailableDiskPins [][]int = [][]int{
 	{5, 6},
@@ -27,10 +29,10 @@ func findPinsFromDisk(hdd string) []int {
 }
 
 func getHardDiskRelay(hdd string) bool {
-	hddLines := findPinsFromDisk(hdd)
-	firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsInput)
+	//hddLines := findPinsFromDisk(hdd)
+	//firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsInput)
 
-	err, _ := firstHDD.Info()
+	err, _ := GpioSocketInstance.Info()
 
 	if err != nil {
 		log.Fatal(err)
@@ -43,7 +45,6 @@ func getHardDiskRelay(hdd string) bool {
 			DiskStatusList[i] = state
 		}
 	}
-	//firstHDD.Close()
 	return state
 }
 
@@ -55,33 +56,35 @@ func HardDiskStatusManager(hdd string) bool {
 
 func HardDiskShutDown(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
+	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
 	print("HDD? ", hdd, "\nHDD Lines? ", hddLines[0], hddLines[1])
 	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
+	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
-	if err != nil {
-		log.Fatal(err)
-	}
 	for i, hddName := range DiskList {
 		if hddName == hdd {
 			DiskStatusList[i] = false
 		}
 	}
-	//firstHDD.Close()
 }
 
 func HardDiskStartUp(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
-	_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
+	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
 	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
+	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
 
-	if err != nil {
-		log.Fatal(err)
-	}
 	for i, hddName := range DiskList {
 		if hddName == hdd {
 			DiskStatusList[i] = true
 		}
 	}
-	//firstHDD.Close()
+}
+
+func HDDRelaySocketConstructor(hdd string) {
+	hddLines := findPinsFromDisk(hdd)
+	firstHDD, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
+	if err != nil {
+		GpioSocketInstance = *firstHDD
+	}
 }
