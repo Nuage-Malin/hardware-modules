@@ -31,7 +31,10 @@ func findPinsFromDisk(hdd string) []int {
 func getHardDiskRelay(hdd string) bool {
 	//hddLines := findPinsFromDisk(hdd)
 	//firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsInput)
-
+	if (GpioSocketInstance == nil) {
+		print("Error\n")
+		return false
+	}
 	err, _ := GpioSocketInstance.Info()
 
 	if err != nil {
@@ -59,6 +62,10 @@ func HardDiskShutDown(hdd string) {
 	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
 	print("HDD? ", hdd, "\nHDD Lines? ", hddLines[0], hddLines[1])
 	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
+	if (GpioSocketInstance == nil) {
+		print("Error\n")
+		return
+	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
 	for i, hddName := range DiskList {
@@ -72,6 +79,10 @@ func HardDiskStartUp(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
 	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
 	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
+	if (GpioSocketInstance == nil) {
+		print("Error\n")
+		return
+	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
 
 	for i, hddName := range DiskList {
