@@ -96,7 +96,7 @@ func HDDRelaySocketConstructor(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
 	var err error
 	GpioSocketInstance, err = gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
-	if err == nil {
+	if err != nil {
 		print("Line initialization error\n")
 		GpioSocketInstance = nil
 	}
