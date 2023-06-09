@@ -35,15 +35,14 @@ func getHardDiskRelay(hdd string) bool {
 		print("Error getHardDiskRelay\n")
 		return false
 	}
-	err, _ := GpioSocketInstance.Info()
+	gpioLine, err := GpioSocketInstance.Info()
 
 	if err != nil {
-		print("oui")
-
+		print("getHardDiskRelay gpio library request error")
 		log.Fatal(err)
 	}
 
-	state := err[0].Used
+	state := gpioLine[0].Used
 
 	for i, hddName := range DiskList {
 		if hddName == hdd {
