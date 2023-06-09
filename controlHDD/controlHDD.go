@@ -38,6 +38,8 @@ func getHardDiskRelay(hdd string) bool {
 	err, _ := GpioSocketInstance.Info()
 
 	if err != nil {
+		print("oui")
+
 		log.Fatal(err)
 	}
 
@@ -99,6 +101,6 @@ func HDDRelaySocketConstructor(hdd string) {
 	if err != nil {
 		print("Line initialization error\n")
 		print(err.Error())
-		GpioSocketInstance = nil
+		//GpioSocketInstance = nil
 	}
 }
