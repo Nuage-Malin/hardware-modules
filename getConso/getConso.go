@@ -47,10 +47,11 @@ func child(hddId int) {
 		if DiskConsoList[hddId][1] < 3600 {
 			str := scanner.Text()
 			split_str := strings.Split(str, " ")
-			value, err := strconv.ParseFloat(split_str[0], 32)
+			value, err := strconv.ParseFloat(split_str[3], 32)
 			if err != nil {
 				log.Fatal(err)
 			}
+			print(value)
 			time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 			DiskConsoList[hddId][0] = int(value)
 			DiskConsoList[hddId][1]++
