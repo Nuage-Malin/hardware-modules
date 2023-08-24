@@ -70,6 +70,8 @@ func child(hddId int) {
 }
 
 func GetConso(hddId int) {
+	print("last try")
+
 	fork.RegisterFunc("child", child)
 	print("tjena2")
 
