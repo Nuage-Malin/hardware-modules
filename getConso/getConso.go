@@ -71,7 +71,11 @@ func child(hddId int) {
 
 func GetConso(hddId int) {
 	fork.RegisterFunc("child", child)
+	print("tjena2")
+
 	fork.Init()
+	print("tjena3")
+
 	if err := fork.Fork("child", 1); err != nil {
 		log.Fatalf("failed to fart: %v", err)
 	}
