@@ -34,12 +34,18 @@ func findArduino() string {
 }
 
 func child(hddId int) {
+	print("hejjjjj5")
+
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
+	print("hejjjjj6")
+
 	s, err := serial.OpenPort(c)
+	print("hejjjjj7")
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	print("hejjjjj")
+	print("hejjjjj8")
 
 	scanner := bufio.NewScanner(s)
 	print("tjena")
