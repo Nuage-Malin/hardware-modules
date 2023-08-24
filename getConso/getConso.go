@@ -39,7 +39,11 @@ func child(hddId int) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	print("hejjjjj")
+
 	scanner := bufio.NewScanner(s)
+	print("tjena")
+
 	for scanner.Scan() {
 		if scanner.Err() != nil {
 			log.Fatal(err)
