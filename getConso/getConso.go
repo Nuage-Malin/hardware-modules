@@ -51,7 +51,7 @@ func child(hddId int) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			print(value)
+			print("value: ", value)
 			time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
 			DiskConsoList[hddId][0] = int(value)
 			DiskConsoList[hddId][1]++
