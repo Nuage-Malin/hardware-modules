@@ -74,6 +74,7 @@ func child(hddId int) {
 
 func init() {
 	fork.RegisterFunc("child", child)
+	print("went through here")
 	fork.Init()
 }
 
