@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
+	"os"
 
 	"github.com/kraken-hpc/go-fork"
 	"github.com/tarm/serial"
@@ -34,21 +36,16 @@ func findArduino() string {
 }
 
 func child(hddId int) {
-	print("hejjjjj5")
+	fmt.Printf("child(%d) pid: %d\n", hddId, os.Getpid())
 
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
-	print("hejjjjj6")
-
 	s, err := serial.OpenPort(c)
-	print("hejjjjj7")
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	print("hejjjjj8")
 
 	scanner := bufio.NewScanner(s)
-	print("tjena")
 
 	for scanner.Scan() {
 		if scanner.Err() != nil {
@@ -75,16 +72,15 @@ func child(hddId int) {
 	}
 }
 
-func GetConso(hddId int) {
-	print("last try")
-
+func init() {
 	fork.RegisterFunc("child", child)
-	print("tjena2")
-
 	fork.Init()
-	print("tjena3")
+}
 
-	if err := fork.Fork("child", 1); err != nil {
+func GetConso(hddId int) {
+	fmt.Printf("main() pid: %d\n", os.Getpid())
+
+	if err := fork.Fork("child", hddId); err != nil {
 		log.Fatalf("failed to fart: %v", err)
 	}
 }
