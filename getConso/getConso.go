@@ -2,13 +2,12 @@ package getConso
 
 import (
 	"bufio"
-	"io/ioutil"
+	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"fmt"
-	"os"
 
 	"github.com/kraken-hpc/go-fork"
 	"github.com/tarm/serial"
@@ -24,21 +23,22 @@ var DiskConsoList [1][4]int = [1][4]int{} //voir pour moduler taille list
 
 // return DiskConsoList[2] / DiskConsoList[3] pour avoir conso par heure en kW/h dans une autre fonction
 
-func findArduino() string {
-	contents, _ := ioutil.ReadDir("/dev")
-
-	for _, f := range contents {
-		if strings.Contains(f.Name(), "ttyUSB") || strings.Contains(f.Name(), "ttyACM0") {
-			return "/dev/" + f.Name()
-		}
-	}
-	return ""
-}
-
 func child(hddId int) {
 	fmt.Printf("child(%d) pid: %d\n", hddId, os.Getpid())
 
-	c := &serial.Config{Name: findArduino(), Baud: 9600}
+	contents, _ := os.ReadDir("/dev")
+	var hddPath string = ""
+
+	for _, f := range contents {
+		if strings.Contains(f.Name(), "ttyUSB") || strings.Contains(f.Name(), "ttyACM0") {
+			hddPath = "/dev/" + f.Name()
+		}
+	}
+	if hddPath == "" {
+		log.Fatal("HDD not found")
+	}
+
+	c := &serial.Config{Name: hddPath, Baud: 9600}
 	s, err := serial.OpenPort(c)
 
 	if err != nil {
