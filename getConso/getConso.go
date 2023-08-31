@@ -2,14 +2,13 @@ package getConso
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
-	"github.com/kraken-hpc/go-fork"
 	"github.com/tarm/serial"
 )
 
@@ -23,22 +22,24 @@ var DiskConsoList [1][4]int = [1][4]int{} //voir pour moduler taille list
 
 // return DiskConsoList[2] / DiskConsoList[3] pour avoir conso par heure en kW/h dans une autre fonction
 
-func child(hddId int) {
-	fmt.Printf("child(%d) pid: %d\n", hddId, os.Getpid())
-
-	contents, _ := os.ReadDir("/dev")
-	var hddPath string = ""
-
-	for _, f := range contents {
-		if strings.Contains(f.Name(), "ttyUSB") || strings.Contains(f.Name(), "ttyACM0") {
-			hddPath = "/dev/" + f.Name()
+func findArduino() string {
+	outputDirRead, _ := os.Open("/dev")
+	outputDirFiles, _ := outputDirRead.ReadDir(0)
+	for outputIndex := range outputDirFiles {
+		outputFileHere := outputDirFiles[outputIndex]
+		// Get name of file.
+		f := outputFileHere.Name()
+		if strings.Contains(f, "ttyUSB") || strings.Contains(f, "ttyACM0") {
+			return "/dev/" + f
 		}
 	}
-	if hddPath == "" {
-		log.Fatal("HDD not found")
-	}
+	return ""
+}
 
-	c := &serial.Config{Name: hddPath, Baud: 9600}
+func child(wg *sync.WaitGroup, hddId int) {
+	defer wg.Done()
+
+	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
 
 	if err != nil {
@@ -72,18 +73,11 @@ func child(hddId int) {
 	}
 }
 
-func init() {
-	fork.RegisterFunc("child", child)
-	print("went through here")
-	fork.Init()
-}
-
 func GetConso(hddId int) {
-	fmt.Printf("main() pid: %d\n", os.Getpid())
-
-	if err := fork.Fork("child", hddId); err != nil {
-		log.Fatalf("failed to fart: %v", err)
-	}
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go child(&wg, hddId)
+	wg.Wait()
 }
 
 func SendConso(hddId int) int {
