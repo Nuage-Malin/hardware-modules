@@ -2,18 +2,23 @@ package getConso
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/tarm/serial"
 )
 
 // var hddId = 0
-var DiskConsoList [1][4]int = [1][4]int{} //voir pour moduler taille list
+var DiskConsoList [1]int = [1]int{} //voir pour moduler taille list
+
+const (
+	IdlePower      = 30.0 // Watts in idle mode
+	ReadWritePower = 60.0 // Watts during read/write operations
+)
 
 // [0] : conso par seconde incr par seconde
 // [1] : nbr de seconde incr par seconde (if statement si 3600 sec)
@@ -36,8 +41,13 @@ func findArduino() string {
 	return ""
 }
 
-func child(wg *sync.WaitGroup, hddId int) {
-	defer wg.Done()
+func GetConso(hddId int) {
+	var (
+		totalEnergy  float64
+		startTime    time.Time
+		newState     string
+		currentState string
+	)
 
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
 	s, err := serial.OpenPort(c)
@@ -52,32 +62,48 @@ func child(wg *sync.WaitGroup, hddId int) {
 		if scanner.Err() != nil {
 			log.Fatal(err)
 		}
-		if DiskConsoList[hddId][1] < 3600 {
-			str := scanner.Text()
-			split_str := strings.Split(str, " ")
-			value, err := strconv.ParseFloat(split_str[3], 32)
-			if err != nil {
-				log.Fatal(err)
-			}
-			print(value)
-			time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
-			DiskConsoList[hddId][0] = int(value)
-			DiskConsoList[hddId][1]++
-			// DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1]) // fonctionnel ?
-		} else if DiskConsoList[hddId][1] >= 3600 { //trouver un moyen de quand meme envoyer des kW/h sans attendre directement 1 heure
-			//DiskConsoList[hddId][2] += (DiskConsoList[hddId][0] / DiskConsoList[hddId][1])
-			//DiskConsoList[hddId][1] = 0
-			DiskConsoList[hddId][1] = 0
-			DiskConsoList[hddId][3]++
+		str := scanner.Text()
+		split_str := strings.Split(str, " ")
+		value, err := strconv.ParseFloat(split_str[3], 32)
+		if err != nil {
+			log.Fatal(err)
 		}
-	}
-}
+		time.Sleep(1000 * time.Millisecond)
+		DiskConsoList[hddId] = int(value)
 
-func GetConso(hddId int) {
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go child(&wg, hddId)
-	wg.Wait()
+		// State detection
+		if int(value) >= IdlePower {
+			newState = "readwrite"
+		} else {
+			newState = "idle"
+		}
+
+		if newState != currentState {
+			// Calculate the time spent in the current state
+			elapsedTime := time.Since(startTime)
+
+			// Update the total energy consumption based on the previous state
+			if currentState == "idle" {
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * IdlePower
+				DiskConsoList[hddId] = int(totalEnergy)
+			} else if currentState == "readwrite" {
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * ReadWritePower
+				DiskConsoList[hddId] = int(totalEnergy)
+			}
+
+			// Update the current state
+			currentState = newState
+
+			// Update the start time to mark the beginning of the new state
+			startTime = time.Now()
+		}
+
+		// Print the current total energy consumption
+		fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", totalEnergy)
+
+		// Sleep for a while to control the measurement rate
+		time.Sleep(time.Second)
+	}
 }
 
 func SendConso(hddId int) int {
@@ -86,27 +112,5 @@ func SendConso(hddId int) int {
 	// } else {
 	// 	return DiskConsoList[hddId][2] / DiskConsoList[hddId][3]
 	// }
-	return DiskConsoList[hddId][0]
+	return DiskConsoList[hddId]
 }
-
-// func main() {
-// 	c := &serial.Config{Name: findArduino(), Baud: 9600}
-// 	s, err := serial.OpenPort(c)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	scanner := bufio.NewScanner(s)
-// 	// scanner.Split(bufio.ScanWords)
-// 	for scanner.Scan() {
-// 		fmt.Print("Energy consumntion: ")
-// 		// time.Sleep(1000 * time.Millisecond) //à voir si nécessaire
-// 		if scanner.Err() != nil {
-// 			log.Fatal(err)
-// 		}
-// 		str := scanner.Text()
-// 		// fmt.Print(str)
-// 		split_str := strings.Split(str, " ")
-// 		fmt.Print(split_str[0])
-// 		fmt.Print("\n")
-// 	}
-// }
