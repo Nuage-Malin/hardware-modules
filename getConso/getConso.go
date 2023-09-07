@@ -80,25 +80,22 @@ func GetConso(hddId int) {
 			newState = "idle"
 		}
 
-		if newState != currentState {
-			// Calculate the time spent in the current state
-			elapsedTime := time.Since(startTime)
+		elapsedTime := time.Since(startTime)
 
-			// Update the total energy consumption based on the previous state
-			if currentState == "idle" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * value
-				DiskConsoList[hddId] = int(totalEnergy)
-			} else if currentState == "readwrite" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * value
-				DiskConsoList[hddId] = int(totalEnergy)
-			}
+		// Update the total energy consumption based on the current state
+		if currentState == "idle" {
+			totalEnergy += float64(elapsedTime) / float64(time.Second) * value
+			DiskConsoList[hddId] = int(totalEnergy)
 
-			// Update the current state
-			currentState = newState
+		} else if currentState == "readwrite" {
+			totalEnergy += float64(elapsedTime) / float64(time.Second) * value
+			DiskConsoList[hddId] = int(totalEnergy)
 
-			// Update the start time to mark the beginning of the new state
-			startTime = time.Now()
 		}
+
+		// Update the current state and start time
+		currentState = newState
+		startTime = time.Now()
 
 		// Print the current total energy consumption
 		fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", totalEnergy)
