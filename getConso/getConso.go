@@ -57,6 +57,7 @@ func GetConso(hddId int) {
 	}
 
 	scanner := bufio.NewScanner(s)
+	currentState = "idle"
 
 	for scanner.Scan() {
 		if scanner.Err() != nil {
@@ -70,6 +71,7 @@ func GetConso(hddId int) {
 		}
 		time.Sleep(1000 * time.Millisecond)
 		DiskConsoList[hddId] = int(value)
+		fmt.Println("debug: ", int(value))
 
 		// State detection
 		if int(value) >= IdlePower {
@@ -84,10 +86,10 @@ func GetConso(hddId int) {
 
 			// Update the total energy consumption based on the previous state
 			if currentState == "idle" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * IdlePower
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * value
 				DiskConsoList[hddId] = int(totalEnergy)
 			} else if currentState == "readwrite" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * ReadWritePower
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * value
 				DiskConsoList[hddId] = int(totalEnergy)
 			}
 
