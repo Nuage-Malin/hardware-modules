@@ -45,8 +45,8 @@ func GetConso(hddId int) {
 	var (
 		totalEnergy  float64
 		startTime    time.Time
-		newState     string
 		currentState string
+		newState     string
 	)
 
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
@@ -80,17 +80,21 @@ func GetConso(hddId int) {
 			newState = "idle"
 		}
 
-		elapsedTime := time.Since(startTime)
-
 		// Update the total energy consumption based on the current state
-		if currentState == "idle" {
-			totalEnergy += float64(elapsedTime) / float64(time.Second) * value
-			DiskConsoList[hddId] = int(totalEnergy)
+		if newState != currentState {
+			// Calculate the energy consumed during the previous state
+			elapsedTime := time.Since(startTime)
+			if currentState == "idle" {
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * IdlePower
+			} else if currentState == "readwrite" {
+				totalEnergy += float64(elapsedTime) / float64(time.Second) * ReadWritePower
+			}
 
-		} else if currentState == "readwrite" {
-			totalEnergy += float64(elapsedTime) / float64(time.Second) * value
-			DiskConsoList[hddId] = int(totalEnergy)
+			// Update the current state
+			currentState = newState
 
+			// Update the start time to mark the beginning of the new state
+			startTime = time.Now()
 		}
 
 		// Update the current state and start time
