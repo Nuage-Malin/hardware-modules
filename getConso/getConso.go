@@ -69,7 +69,6 @@ func GetConso(hddId int) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		time.Sleep(1000 * time.Millisecond)
 		DiskConsoList[hddId] = int(value)
 		fmt.Println("debug: ", int(value))
 
@@ -95,14 +94,10 @@ func GetConso(hddId int) {
 
 			// Update the start time to mark the beginning of the new state
 			startTime = time.Now()
+
+			// Print the current total energy consumption
+			fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", totalEnergy)
 		}
-
-		// Update the current state and start time
-		currentState = newState
-		startTime = time.Now()
-
-		// Print the current total energy consumption
-		fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", totalEnergy)
 
 		// Sleep for a while to control the measurement rate
 		time.Sleep(time.Second)
