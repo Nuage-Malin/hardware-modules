@@ -84,6 +84,7 @@ func GetConso(hddId int) {
 			// Calculate the energy consumed during the previous state
 			elapsedTime := time.Since(startTime)
 			fmt.Println(elapsedTime)
+			fmt.Println(time.Second)
 			if currentState == "idle" {
 				totalEnergy += float64(elapsedTime) / float64(time.Second) * IdlePower
 			} else if currentState == "readwrite" {
