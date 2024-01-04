@@ -12,13 +12,15 @@ import (
 	"github.com/tarm/serial"
 )
 
-// var hddId = 0
 var DiskConsoList [1]int = [1]int{} //voir pour moduler taille list
 
-const (
-	IdlePower      = 30.0 // Watts in idle mode
-	ReadWritePower = 60.0 // Watts during read/write operations
+var (
+	HddIdlePower      = 30.0	// Watts in idle mode
+	HddReadWritePower = 60.0	// Watts during read/write operations
+	ServerPower		  = 100.0	// Watts the machine alone draws
+	NoisePower		  = 2.0		// Watts measured when everything is shut down
 )
+
 
 // [0] : conso par seconde incr par seconde
 // [1] : nbr de seconde incr par seconde (if statement si 3600 sec)
@@ -41,9 +43,8 @@ func findArduino() string {
 	return ""
 }
 
-func GetConso(hddId int) {
+func GetConso(hddId int, bench bool) {
 	var (
-		totalEnergy  float64
 		startTime    time.Time
 		currentState string
 		newState     string
@@ -58,6 +59,7 @@ func GetConso(hddId int) {
 
 	scanner := bufio.NewScanner(s)
 	currentState = "idle"
+	startTime = time.Now()
 
 	for scanner.Scan() {
 		if scanner.Err() != nil {
@@ -69,38 +71,54 @@ func GetConso(hddId int) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		DiskConsoList[hddId] = int(value)
 		fmt.Println("debug: ", int(value))
 
-		// State detection
-		if int(value) >= IdlePower {
-			newState = "readwrite"
-		} else {
-			newState = "idle"
-		}
-
-		// Update the total energy consumption based on the current state
-		if newState != currentState {
-			// Calculate the energy consumed during the previous state
-			elapsedTime := time.Since(startTime)
-			fmt.Println(elapsedTime)
-			fmt.Println(time.Second)
-			if currentState == "idle" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * IdlePower
-			} else if currentState == "readwrite" {
-				totalEnergy += float64(elapsedTime) / float64(time.Second) * ReadWritePower
+		if (!bench) {
+			// State detection
+			if int(value) >= HddIdlePower {
+				newState = "readwrite"
+			} else {
+				newState = "idle"
 			}
 
-			// Update the current state
-			currentState = newState
+			// Update the total energy consumption based on the current state
+			if newState != currentState {
+				// Calculate the energy consumed during the previous state
+				elapsedTime := time.Since(startTime)
+				fmt.Println(elapsedTime)
+				fmt.Println(time.Second)
+				if currentState == "idle" {
+					DiskConsoList[hddId] += float64(elapsedTime) / float64(time.Second) * HddIdlePower
+				} else if currentState == "readwrite" {
+					DiskConsoList[hddId] += float64(elapsedTime) / float64(time.Second) * HddReadWritePower
+				}
 
-			// Update the start time to mark the beginning of the new state
-			startTime = time.Now()
+				// Update the current state
+				currentState = newState
 
-			// Print the current total energy consumption
-			fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", totalEnergy)
+				// Update the start time to mark the beginning of the new state
+				startTime = time.Now()
+
+				// Print the current total energy consumption
+				fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", DiskConsoList[hddId])
+			}
+		} else {
+			// Give 20 seconds to the device to stabilize it's consumption at each step of the measurment
+			elapsedTime := time.Since(startTime)
+			switch {
+			case (elapsedTime >= 20 && elapsedTime <= 30):
+				HddReadWritePower += float64(elapsedTime) - 20 / float64(time.Second) * value
+			case (elapsedTime >= 50 elapsedTime <= 60):
+				HddIdlePower += float64(elapsedTime) - 50 / float64(time.Second) * value
+			case (elapsedTime >= 80 && elapsedTime <= 90):
+				ServerPower += float64(elapsedTime) - 80 / float64(time.Second) * value
+			case (elapsedTime >= 110 && elapsedTime <= 120):
+				NoisePower += float64(elapsedTime) - 110 / float64(time.Second) * value
+			case (elapsedTime > 120):
+				return
+			}
+			
 		}
-
 		// Sleep for a while to control the measurement rate
 		time.Sleep(time.Second)
 	}
