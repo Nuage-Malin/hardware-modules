@@ -12,7 +12,7 @@ import (
 	"github.com/tarm/serial"
 )
 
-var DiskConsoList [1]int = [1]int{} //voir pour moduler taille list
+var DiskConsoList [1]float64 = [1]float64{} //voir pour moduler taille list
 
 var (
 	HddIdlePower      = 30.0	// Watts in idle mode
@@ -71,11 +71,11 @@ func GetConso(hddId int, bench bool) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("debug: ", int(value))
+		fmt.Println("debug: ", float64(value))
 
 		if (!bench) {
 			// State detection
-			if int(value) >= HddIdlePower {
+			if float64(value) >= HddIdlePower {
 				newState = "readwrite"
 			} else {
 				newState = "idle"
