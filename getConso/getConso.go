@@ -108,7 +108,7 @@ func GetConso(hddId int, bench bool) {
 			switch {
 			case (elapsedTime >= 20 && elapsedTime <= 30):
 				HddReadWritePower += float64(elapsedTime) - 20 / float64(time.Second) * value
-			case (elapsedTime >= 50 elapsedTime <= 60):
+			case (elapsedTime >= 50 && elapsedTime <= 60):
 				HddIdlePower += float64(elapsedTime) - 50 / float64(time.Second) * value
 			case (elapsedTime >= 80 && elapsedTime <= 90):
 				ServerPower += float64(elapsedTime) - 80 / float64(time.Second) * value
