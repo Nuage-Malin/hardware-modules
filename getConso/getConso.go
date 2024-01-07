@@ -124,7 +124,7 @@ func GetConso(hddId int, bench bool) {
 	}
 }
 
-func SendConso(hddId int) int {
+func SendConso(hddId int) float64 {
 	// if DiskConsoList[hddId][3] < 2 {
 	// 	return DiskConsoList[hddId][2]
 	// } else {
