@@ -2,6 +2,7 @@ package controlHDD
 
 import (
 	"log"
+	"fmt"
 
 	"github.com/warthog618/gpiod"
 )
@@ -19,6 +20,15 @@ var DiskPins [][]int = [][]int{}   //[1][2]int
 var DiskList []string = []string{} //[1]string
 var DiskStatusList []bool = []bool{}
 
+/**
+ * @brief Hibernate or wake up the computer to which disks are connected.
+ *
+ * The function calls the server-manager `hsmlib` functions.
+ * It either wakes up the computer using WoLAN magic packet or hibernates it
+ * using the `systemctl` command.
+ *
+ * @param isAsleep The state the computer must be changed to.
+ */
 func findPinsFromDisk(hdd string) []int {
 	for i, row := range DiskPins {
 		if DiskList[i] == hdd {
@@ -28,13 +38,21 @@ func findPinsFromDisk(hdd string) []int {
 	return nil
 }
 
+/**
+ * @brief Hibernate or wake up the computer to which disks are connected.
+ *
+ * The function calls the server-manager `hsmlib` functions.
+ * It either wakes up the computer using WoLAN magic packet or hibernates it
+ * using the `systemctl` command.
+ *
+ * @param isAsleep The state the computer must be changed to.
+ */
 func getHardDiskRelay(hdd string) bool {
-	//hddLines := findPinsFromDisk(hdd)
-	//firstHDD, _ := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsInput)
 	if (GpioSocketInstance == nil) {
 		print("Error getHardDiskRelay\n")
 		return false
 	}
+	
 	gpioLine, err := GpioSocketInstance.Info()
 
 	if err != nil {
@@ -53,11 +71,28 @@ func getHardDiskRelay(hdd string) bool {
 }
 
 // Disk status request
-
+/**
+ * @brief Hibernate or wake up the computer to which disks are connected.
+ *
+ * The function calls the server-manager `hsmlib` functions.
+ * It either wakes up the computer using WoLAN magic packet or hibernates it
+ * using the `systemctl` command.
+ *
+ * @param isAsleep The state the computer must be changed to.
+ */
 func HardDiskStatusManager(hdd string) bool {
 	return getHardDiskRelay(hdd)
 }
 
+/**
+ * @brief Hibernate or wake up the computer to which disks are connected.
+ *
+ * The function calls the server-manager `hsmlib` functions.
+ * It either wakes up the computer using WoLAN magic packet or hibernates it
+ * using the `systemctl` command.
+ *
+ * @param isAsleep The state the computer must be changed to.
+ */
 func HardDiskShutDown(hdd string) {
 	hddLines := findPinsFromDisk(hdd)
 	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
@@ -66,6 +101,9 @@ func HardDiskShutDown(hdd string) {
 	if (GpioSocketInstance == nil) {
 		print("Error HardDiskShutDown\n")
 		return
+	}
+	for i, linePrint := range hddLines {
+		print(linePrint[i])
 	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
@@ -76,13 +114,24 @@ func HardDiskShutDown(hdd string) {
 	}
 }
 
-func HardDiskStartUp(hdd string) {
+/**
+ * @brief .
+ *
+ * The function calls the server-manager `hsmlib` functions.
+ * It either wakes up the computer using WoLAN magic packet or hibernates it
+ * using the `systemctl` command.
+ *
+ * @param isAsleep The state the computer must be changed to.
+ */
+func HardDiskStartUp(hdd string) error {
 	hddLines := findPinsFromDisk(hdd)
-	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
-	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
+
 	if (GpioSocketInstance == nil) {
 		print("Error HardDiskStartUp\n")
 		return
+	}
+	for i, linePrint := range hddLines {
+		print(linePrint[i])
 	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
 
@@ -93,13 +142,21 @@ func HardDiskStartUp(hdd string) {
 	}
 }
 
-func HDDRelaySocketConstructor(hdd string) {
+/**
+ * @brief Constructor for gpioLines of each HDD.
+ *
+ * The function initializes a gpioLines object for each HDD.
+ * Available gpio pin tuples are fetched from `AvailableDiskPins` depending on HDD name.
+ * In our current implementation, Raspberry Pi 3b+ allows only 4 HDD to be controlled.
+ *
+ * @param hdd The HDD to initialize the line for
+ */
+func HDDRelaySocketConstructor(hdd string) error {
 	hddLines := findPinsFromDisk(hdd)
 	var err error
 	GpioSocketInstance, err = gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(0, 0))
 	if err != nil {
-		print("Line initialization error\n")
-		print(err.Error())
-		//GpioSocketInstance = nil
+		return fmt.Errorf("HDDRelaySocketConstructor: Line initialization error\n%s", err.Error())
 	}
+	return nil
 }
