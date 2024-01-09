@@ -3,6 +3,7 @@ package controlHDD
 import (
 	"log"
 	"fmt"
+	"errors"
 
 	"github.com/warthog618/gpiod"
 )
@@ -100,7 +101,7 @@ func HardDiskShutDown(hdd string) {
 	//err := firstHDD.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 	if (GpioSocketInstance == nil) {
 		print("Error HardDiskShutDown\n")
-		return
+		return errors.New("Error HardDiskShutDown")
 	}
 	for _, linePrint := range hddLines {
 		print(linePrint)
@@ -112,6 +113,7 @@ func HardDiskShutDown(hdd string) {
 			DiskStatusList[i] = false
 		}
 	}
+	return nil
 }
 
 /**
@@ -128,7 +130,7 @@ func HardDiskStartUp(hdd string) error {
 
 	if (GpioSocketInstance == nil) {
 		print("Error HardDiskStartUp\n")
-		return
+		return errors.New("Error HardDiskStartUp")
 	}
 	for _, linePrint := range hddLines {
 		print(linePrint)
@@ -140,6 +142,7 @@ func HardDiskStartUp(hdd string) error {
 			DiskStatusList[i] = true
 		}
 	}
+	return nil
 }
 
 /**
