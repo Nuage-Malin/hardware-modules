@@ -102,8 +102,8 @@ func HardDiskShutDown(hdd string) {
 		print("Error HardDiskShutDown\n")
 		return
 	}
-	for i, linePrint := range hddLines {
-		print(linePrint[i])
+	for _, linePrint := range hddLines {
+		print(linePrint)
 	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveLow))
 
@@ -130,8 +130,8 @@ func HardDiskStartUp(hdd string) error {
 		print("Error HardDiskStartUp\n")
 		return
 	}
-	for i, linePrint := range hddLines {
-		print(linePrint[i])
+	for _, linePrint := range hddLines {
+		print(linePrint)
 	}
 	GpioSocketInstance.Reconfigure(gpiod.WithLines(hddLines, gpiod.AsActiveHigh))
 
