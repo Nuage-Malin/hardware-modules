@@ -66,6 +66,7 @@ func GetConso(hddId int, bench bool) {
 			log.Fatal(err)
 		}
 		str := scanner.Text()
+		print(str)
 		split_str := strings.Split(str, " ")
 		value, err := strconv.ParseFloat(split_str[3], 32)
 		if err != nil {
