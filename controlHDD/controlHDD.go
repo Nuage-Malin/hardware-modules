@@ -94,7 +94,7 @@ func HardDiskStatusManager(hdd string) bool {
  *
  * @param isAsleep The state the computer must be changed to.
  */
-func HardDiskShutDown(hdd string) {
+func HardDiskShutDown(hdd string) error {
 	hddLines := findPinsFromDisk(hdd)
 	//_, err := gpiod.RequestLines("gpiochip0", hddLines, gpiod.AsOutput(1, 1))
 	print("HDD? ", hdd, "\nHDD Lines? ", hddLines[0], hddLines[1])
