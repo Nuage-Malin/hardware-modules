@@ -46,8 +46,8 @@ func findArduino() string {
 func GetConso(hddId int, bench bool) {
 	var (
 		startTime    time.Time
-		currentState string
-		newState     string
+		// currentState string
+		// newState     string
 	)
 
 	c := &serial.Config{Name: findArduino(), Baud: 9600}
@@ -58,7 +58,7 @@ func GetConso(hddId int, bench bool) {
 	}
 
 	scanner := bufio.NewScanner(s)
-	currentState = "idle"
+	// currentState = "idle"
 	startTime = time.Now()
 
 	for scanner.Scan() {
@@ -76,11 +76,11 @@ func GetConso(hddId int, bench bool) {
 
 		if (!bench) {
 			// State detection
-			if float64(value) >= HddIdlePower {
-				newState = "readwrite"
-			} else {
-				newState = "idle"
-			}
+			// if float64(value) >= HddIdlePower {
+				// newState = "readwrite"
+			// } else {
+				// newState = "idle"
+			// }
 
 			// Update the total energy consumption based on the current state
 			// if newState != currentState {
