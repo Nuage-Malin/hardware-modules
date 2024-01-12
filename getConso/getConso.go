@@ -103,7 +103,7 @@ func GetConso(hddId int, bench bool) {
 				// Print the current total energy consumption
 				DiskConsoList[hddId] = float64(value)
 				fmt.Printf("Total Energy Consumption: %.2f Watt-seconds\n", DiskConsoList[hddId])
-			}
+			//}
 		} else {
 			// Give 20 seconds to the device to stabilize it's consumption at each step of the measurment
 			elapsedTime := time.Since(startTime)
